@@ -1,68 +1,54 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Heros</title>
-    <link rel="stylesheet" href="./Assets/Css/style.css">
+    <title>Superhero Villain Database</title>
+    <style>
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th, td {
+            padding: 8px;
+            text-align: left;
+            border: 1px solid #ddd;
+        }
+        th {
+            cursor: pointer;
+        }
+    </style>
 </head>
-
 <body>
-    <h1><span class="blue"></span>Super<span class="blue"></span><span class="yellow">heroes</span>
-    </h1>
-    <div>
-        <p for="">Items per Page: </p>
-        <select name="" id="">
-            <option value="10">10</option>
-            <option value="20" selected>20</option>
-            <option value="50">50</option>
-            <option value="100">100</option>
-            <option value="all">All</option>
-        </select>
-    </div>
-    <table class="container">
+
+    <input type="text" id="search" placeholder="Search by name...">
+    <select id="pageSize">
+        <option value="10">10</option>
+        <option value="20" selected>20</option>
+        <option value="50">50</option>
+        <option value="100">100</option>
+        <option value="all">All</option>
+    </select>
+
+    <table id="heroTable">
         <thead>
             <tr>
-                <th>
-                    <h1>Icon</h1>
-                </th>
-                <th>
-                    <h1>Name</h1>
-                </th>
-                <th>
-                    <h1>Full Name</h1>
-                </th>
-                <th>
-                    <h1>PowerStats</h1>
-                </th>
-                <th>
-                    <h1>Race</h1>
-                </th>
-                <th>
-                    <h1>Gender</h1>
-                </th>
-                <th>
-                    <h1>Height</h1>
-                </th>
-                <th>
-                    <h1>Weight</h1>
-                </th>
-                <th>
-                    <h1>Place Of Birth</h1>
-                </th>
-                <th>
-                    <h1>Alignment</h1>
-                </th>
+                <th data-sort="name">Name</th>
+                <th data-sort="fullName">Full Name</th>
+                <th data-sort="race">Race</th>
+                <th data-sort="gender">Gender</th>
+                <th data-sort="height">Height</th>
+                <th data-sort="weight">Weight</th>
+                <th data-sort="placeOfBirth">Place of Birth</th>
+                <th data-sort="alignment">Alignment</th>
+                <th>Powerstats</th>
             </tr>
         </thead>
         <tbody>
-
+            <!-- Data will be inserted here -->
         </tbody>
     </table>
-    <script type="module" src="./Assets/js/scripts.js">
 
-    </script>
+    <script src="script.js"></script>
 </body>
-
 </html>
