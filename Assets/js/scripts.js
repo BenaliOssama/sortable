@@ -7,22 +7,35 @@
 //     return heroes
 // }
 
+
 fetch('https://rawcdn.githack.com/akabab/superhero-api/0.2.0/api/all.json')
-    .then((response) => response.json())
-    .then(page)
+.then((response) => response.json())
+.then(page)
 
+let c = 20 ; 
 function page(data) {
+    console.log(c)
     console.log(data)
-    const tbody = document.getElementsByTagName('tbody')[0]; // Get the first tbody
+    const select= document.querySelector('select')
+select.addEventListener('input', (e)=>{
+    console.log(select.value)
+    c = Number(select.value)
+    const tbody = document.querySelector('tbody') // Get the first tbody
     if (typeof data !== "undefined") {
-
-        data.forEach((item) => {
+        for (let i = 0 ; i < c ; i ++){
+        let item = data[i]
+        //data.forEach((item) => {
             const row = document.createElement('tr');
             row.innerHTML = `
             <td><img src="${item.images.xs}"></td>
             <td>${item.name}</td> 
-            <td>${item.biography.fullName == "" ? item.name :item.biography.fullName}</td>
-            <td>${JSON.stringify(item.powerstats)}</td>
+            <td>${item.biography.fullName == "" ? 'N/A' :item.biography.fullName}</td>
+            <td> <ul> <li> Combat :${item.powerstats.combat} </li>
+            <li> durability${item.powerstats.durability} </li>
+            <li> durability ${item.powerstats.intelligence} </li>
+            <li> durability${item.powerstats.power} </li>
+            <li> durability${item.powerstats.speed} </li>
+            <li> durability ${item.powerstats.strength} </li> </ul> </td>
             <td>${item.appearance.race}</td>
             <td>${item.appearance.gender}</td>
             <td>${item.appearance.height}</td>
@@ -32,8 +45,10 @@ function page(data) {
             `; // Adjusted to match typical API structure
 
             tbody.appendChild(row);
-        });
+        };
     }
+})
+
 }
 
 page()
