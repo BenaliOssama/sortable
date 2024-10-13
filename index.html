@@ -21,6 +21,11 @@
             <option value="all">All</option>
         </select>
     </div>
+    <div class="search-container">
+        <form action="/action_page.php">
+            <input type="text" placeholder="Search.." name="search">
+        </form>
+    </div>
     <table class="container">
         <thead>
             <tr>
@@ -28,31 +33,31 @@
                     <h1>Icon</h1>
                 </th>
                 <th>
-                    <h1>Name</h1>
+                    <h1 id="name">Name</h1>
                 </th>
                 <th>
-                    <h1>Full Name</h1>
+                    <h1 id="fullname">Full Name</h1>
                 </th>
                 <th>
-                    <h1>PowerStats</h1>
+                    <h1 id="powerstats">PowerStats</h1>
                 </th>
                 <th>
-                    <h1>Race</h1>
+                    <h1 id="race">Race</h1>
                 </th>
                 <th>
-                    <h1>Gender</h1>
+                    <h1 id="gender">Gender</h1>
                 </th>
                 <th>
-                    <h1>Height</h1>
+                    <h1 id="height">Height</h1>
                 </th>
                 <th>
-                    <h1>Weight</h1>
+                    <h1 id="weight">Weight</h1>
                 </th>
                 <th>
-                    <h1>Place Of Birth</h1>
+                    <h1 id="placeOfBirth">Place Of Birth</h1>
                 </th>
                 <th>
-                    <h1>Alignment</h1>
+                    <h1 id="alignment">Alignment</h1>
                 </th>
             </tr>
         </thead>
@@ -60,6 +65,13 @@
 
         </tbody>
     </table>
+
+
+    <div class="container">
+        <span>
+            <div class="index"></div>
+        </span>
+    </div>
     <script type="module" src="./Assets/js/scripts.js">
         page()
     </script>

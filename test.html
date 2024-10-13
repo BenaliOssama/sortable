@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Superhero Data Organizer</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f0f0f0;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background-color: white;
+            padding: 20px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            color: #333;
+        }
+
+        .controls {
+            margin-bottom: 20px;
+        }
+
+        input,
+        select {
+            padding: 5px;
+            margin-right: 10px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th,
+        td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #f2f2f2;
+            cursor: pointer;
+        }
+
+        th:hover {
+            background-color: #ddd;
+        }
+
+        img {
+            width: 50px;
+            height: 50px;
+            object-fit: cover;
+        }
+
+        .pagination {
+            margin-top: 20px;
+            display: flex;
+            justify-content: center;
+        }
+
+        .pagination button {
+            margin: 0 5px;
+            padding: 5px 10px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h1>Superhero Data Organizer</h1>
+        <div class="controls">
+            <input type="text" id="search" placeholder="Search by name">
+            <select id="pageSize">
+                <option value="10">10 per page</option>
+                <option value="20" selected>20 per page</option>
+                <option value="50">50 per page</option>
+                <option value="100">100 per page</option>
+                <option value="all">All results</option>
+            </select>
+        </div>
+        <table id="heroTable">
+            <thead>
+                <tr>
+                    <th data-sort="icon">Icon</th>
+                    <th data-sort="name">Name</th>
+                    <th data-sort="fullName">Full Name</th>
+                    <th data-sort="intelligence">Intelligence</th>
+                    <th data-sort="strength">Strength</th>
+                    <th data-sort="speed">Speed</th>
+                    <th data-sort="durability">Durability</th>
+                    <th data-sort="power">Power</th>
+                    <th data-sort="combat">Combat</th>
+                    <th data-sort="race">Race</th>
+                    <th data-sort="gender">Gender</th>
+                    <th data-sort="height">Height</th>
+                    <th data-sort="weight">Weight</th>
+                    <th data-sort="placeOfBirth">Place Of Birth</th>
+                    <th data-sort="alignment">Alignment</th>
+                </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
+        <div class="pagination" id="pagination"></div>
+    </div>
+    <script>
+        let heroes = [];
+        let filteredHeroes = [];
+        let currentPage = 1;
+        let pageSize = 20;
+        let currentSort = { column: 'name', direction: 'asc' };
+
+        const heroTable = document.getElementById('heroTable');
+        const searchInput = document.getElementById('search');
+        const pageSizeSelect = document.getElementById('pageSize');
+        const paginationDiv = document.getElementById('pagination');
+
+        // Fetch and load data
+        fetch('https://rawcdn.githack.com/akabab/superhero-api/0.2.0/api/all.json')
+            .then(response => response.json())
+            .then(loadData);
+
+        function loadData(data) {
+            heroes = data;
+            filteredHeroes = [...heroes];
+            sortHeroes('name', 'asc');
+            renderTable();
+        }
+
+        // Render table
+        function renderTable() {
+            const tbody = heroTable.querySelector('tbody');
+            tbody.innerHTML = '';
+
+            const start = (currentPage - 1) * pageSize;
+            const end = pageSize === 'all' ? filteredHeroes.length : start + parseInt(pageSize);
+            const pageHeroes = filteredHeroes.slice(start, end);
+
+            pageHeroes.forEach(hero => {
+                const row = tbody.insertRow();
+                row.innerHTML = `
+                    <td><img src="${hero.images.xs}" alt="${hero.name}"></td>
+                    <td>${hero.name}</td>
+                    <td>${hero.biography.fullName || ''}</td>
+                    <td>${hero.powerstats.intelligence}</td>
+                    <td>${hero.powerstats.strength}</td>
+                    <td>${hero.powerstats.speed}</td>
+                    <td>${hero.powerstats.durability}</td>
+                    <td>${hero.powerstats.power}</td>
+                    <td>${hero.powerstats.combat}</td>
+                    <td>${hero.appearance.race || ''}</td>
+                    <td>${hero.appearance.gender || ''}</td>
+                    <td>${hero.appearance.height[1] || ''}</td>
+                    <td>${hero.appearance.weight[1] || ''}</td>
+                    <td>${hero.biography.placeOfBirth || ''}</td>
+                    <td>${hero.biography.alignment || ''}</td>
+                `;
+            });
+
+            renderPagination();
+        }
+
+        // Render pagination
+        function renderPagination() {
+            paginationDiv.innerHTML = '';
+            if (pageSize === 'all') return;
+
+            const totalPages = Math.ceil(filteredHeroes.length / pageSize);
+            for (let i = 1; i <= totalPages; i++) {
+                const button = document.createElement('button');
+                button.textContent = i;
+                button.addEventListener('click', () => {
+                    currentPage = i;
+                    renderTable();
+                });
+                if (i === currentPage) {
+                    button.disabled = true;
+                }
+                paginationDiv.appendChild(button);
+            }
+        }
+
+        // Sort heroes
+        function sortHeroes(column, direction) {
+            const getValue = (hero, column) => {
+                switch (column) {
+                    case 'icon':
+                        return hero.images.xs;
+                    case 'name':
+                        return hero.name;
+                    case 'fullName':
+                        return hero.biography.fullName;
+                    case 'intelligence':
+                    case 'strength':
+                    case 'speed':
+                    case 'durability':
+                    case 'power':
+                    case 'combat':
+                        return parseInt(hero.powerstats[column]) || -Infinity;
+                    case 'race':
+                        return hero.appearance.race;
+                    case 'gender':
+                        return hero.appearance.gender;
+                    case 'height':
+                        return parseFloat(hero.appearance.height[1]) || -Infinity;
+                    case 'weight':
+                        return parseFloat(hero.appearance.weight[1]) || -Infinity;
+                    case 'placeOfBirth':
+                        return hero.biography.placeOfBirth;
+                    case 'alignment':
+                        return hero.biography.alignment;
+                    default:
+                        return '';
+                }
+            };
+
+            filteredHeroes.sort((a, b) => {
+                const aValue = getValue(a, column);
+                const bValue = getValue(b, column);
+
+                if (aValue === bValue) return 0;
+                if (aValue === '' || aValue === -Infinity) return 1;
+                if (bValue === '' || bValue === -Infinity) return -1;
+
+                return direction === 'asc'
+                    ? aValue < bValue ? -1 : 1
+                    : aValue > bValue ? -1 : 1;
+            });
+
+            currentSort = { column, direction };
+            currentPage = 1;
+            renderTable();
+        }
+
+        // Event listeners
+        searchInput.addEventListener('input', (e) => {
+            const searchTerm = e.target.value.toLowerCase();
+            filteredHeroes = heroes.filter(hero =>
+                hero.name.toLowerCase().includes(searchTerm)
+            );
+            currentPage = 1;
+            renderTable();
+        });
+
+        pageSizeSelect.addEventListener('change', (e) => {
+            pageSize = e.target.value;
+            currentPage = 1;
+            renderTable();
+        });
+
+        heroTable.querySelector('thead').addEventListener('click', (e) => {
+            const th = e.target.closest('th');
+            if (!th) return;
+
+            const column = th.dataset.sort;
+            const direction = currentSort.column === column && currentSort.direction === 'asc' ? 'desc' : 'asc';
+            sortHeroes(column, direction);
+        });
+    </script>
+</body>
+
+</html>
