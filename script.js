@@ -6,7 +6,7 @@ let ascending = true; // To keep track of sorting order
 
 function page(data) {
     let currentPage = 1; // Initialize current page
-    let c = 20; // Default items per page (can be changed via select input)
+    //let c = 20; // Default items per page (can be changed via select input)
     const totalPages = () => Math.ceil(data.length / c); // Calculate total pages
 
     // Function to display items for the current page
@@ -148,17 +148,20 @@ function addElement(item) {
     
 }*/
 function sortTableBy(columnId, data) {
+    console.log("sort by", columnId);
+
     // Toggle the sort order
     ascending = !ascending;
     
-    // Sort `filteredHeroes` (or your current dataset) based on `columnId`
+    // Sort the data based on `columnId`
     data.sort((a, b) => {
         let valA = getColumnValue(a, columnId);
         let valB = getColumnValue(b, columnId);
         
-        if (valA == null) return 1; // Null values should go last
-        if (valB == null) return -1;
-        
+        // Handle missing values (null, undefined, or "N/A")
+        if (valA == null || valA === "N/A") return 1;
+        if (valB == null || valB === "N/A") return -1;
+
         // For numeric values
         if (!isNaN(valA) && !isNaN(valB)) {
             return ascending ? valA - valB : valB - valA;
@@ -172,15 +175,15 @@ function sortTableBy(columnId, data) {
         if (valA > valB) return ascending ? 1 : -1;
         return 0;
     });
-    //return []
-    return data
-    //renderTable(); // Re-render table after sorting
+
+    return data;
 }
+
 function getColumnValue(item, columnId) {
     switch (columnId) {
         case 'name':
             return item.name;
-        case 'fullName':
+        case 'fullname':
             return item.biography.fullName || 'N/A';
         case 'powerstats':
             return item.powerstats.intelligence || 0; // Choose a default stat to sort by
