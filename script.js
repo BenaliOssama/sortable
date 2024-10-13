@@ -5,6 +5,7 @@ const select = document.querySelector('select');
 let ascending = true; // To keep track of sorting order
 
 function page(data) {
+    console.log(data)
     let currentPage = 1; // Initialize current page
     //let c = 20; // Default items per page (can be changed via select input)
     const totalPages = () => Math.ceil(data.length / c); // Calculate total pages
@@ -133,7 +134,7 @@ function addElement(item) {
 }
 
 function sortTableBy(columnId, data) {
-    console.log("sort by", columnId);
+
 
     // Toggle the sort order
     ascending = !ascending;
@@ -142,17 +143,19 @@ function sortTableBy(columnId, data) {
     data.sort((a, b) => {
         let valA = getColumnValue(a, columnId);
         let valB = getColumnValue(b, columnId);
-        console.log(valA)
-        console.log(valB)
+
         
         // Handle missing values (null, undefined, or "N/A")
         if (valA == null || valA === "N/A" || valA === '-' ) return 1;
         if (valB == null || valB === "N/A" || valB === '-'   ) return -1;
+        
 
-        if (columnId === "weight") {
+        if (columnId === "weight" || columnId === "height") {
             if (valA == 0){return 1};
             if (valB == 0){return -1};
         }
+
+
         // For numeric values
         if (!isNaN(valA) && !isNaN(valB)) {
             return ascending ? valA - valB : valB - valA;
@@ -195,7 +198,7 @@ function getColumnValue(item, columnId) {
         case 'gender':
             return item.appearance.gender || 'N/A';
         case 'height':
-            return parseInt(item.appearance.height[1]) || 0; // Convert height to integer for sorting
+            return parseInt(item.appearance.height[0]) || 0; // Convert height to integer for sorting
         case 'weight':
             return parseInt(item.appearance.weight[0]) || 0; // Convert weight to integer for sorting
         case 'placeOfBirth':
@@ -205,4 +208,33 @@ function getColumnValue(item, columnId) {
         default:
             return null;
     }
+}
+
+
+// Helper function to convert values to centimeters
+function convertToCm(value) {
+    console.log(value)
+    if (typeof value === 'string') {
+        // Handle meters
+        if (value.includes('meters')) {
+            let [imperial, metric] = value.split(',');
+            let meters = parseFloat(metric.replace(' meters', ''));
+            return meters * 100; // Convert meters to cm
+        }
+
+        // Handle feet and inches
+        if (value.includes("'")) {
+            let [feet, inchesAndCm] = value.split(',');
+            let [inchesPart, cmPart] = inchesAndCm.split(' ');
+            let feetVal = parseInt(feet.replace("'", '')) * 30.48; // Convert feet to cm
+            let cmVal = parseFloat(cmPart.replace(' cm', '')); // Get cm
+            return feetVal + cmVal; // Total in cm
+        }
+
+        // Handle direct cm value
+        if (value.includes('cm')) {
+            return parseFloat(value.replace(' cm', ''));
+        }
+    }
+    return 0; // Default value if unrecognized format
 }
