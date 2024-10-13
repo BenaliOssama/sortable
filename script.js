@@ -6,25 +6,51 @@ let ascending = true; // To keep track of sorting order
 
 
 function page(data) {
-    
     displayItems(data, c);
-
+    // number of rows
     select.addEventListener('input', (e) => {
         c = select.value
         displayItems(data, c); 
     });
 
+    // sort elements
     const headers = document.querySelectorAll('th[id]');
-        
     headers.forEach(header => {
         header.addEventListener('click', () => {
             const columnId = header.id;
-            console.log(data)
             data = sortTableBy(columnId, data);
-            console.log(data)
             displayItems(data, c); 
         });
     });
+
+    // search for element
+    const searchInput = document.getElementById('search');
+    // Attach event listener to search field
+    searchInput.addEventListener('input', (event) => {
+
+        const query = event.target.value.toLowerCase(); // Get the search query
+        console.log(query)
+        let heros = findHeroesByName(query, data)
+        displayItems(heros, c); 
+        //filterHeroes(query); // Call the function to filter and render the table
+    });
+}
+function findHeroesByName(name, heroesArray) {
+    // Convert the input name to lowercase for case-insensitive comparison
+    const lowerCaseName = name.toLowerCase();
+    
+    // Filter the heroes array and return all matching objects
+    return heroesArray.filter(hero => 
+        hero.name.toLowerCase().includes(lowerCaseName)
+    );
+}
+
+function filterHeroes(query) {
+    const filtered = data.filter(hero => 
+        hero.name.toLowerCase().includes(query) // Check if name includes the search query
+    );
+
+    renderTable(filtered); // Pass the filtered heroes to render the table
 }
 
 function displayItems(data, count) {
