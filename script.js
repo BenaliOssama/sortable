@@ -115,13 +115,12 @@ function addElement(item) {
         <td><img src="${item.images.xs}"></td>
         <td>${item.name}</td>
         <td>${item.biography.fullName === "" ? 'N/A' : item.biography.fullName}</td>
-        <td><strong>Power Stats:</strong></td>
-        <td>Combat: ${item.powerstats.combat}</td>
-        <td>Durability: ${item.powerstats.durability}</td>
-        <td>Intelligence: ${item.powerstats.intelligence}</td>
-        <td>Power: ${item.powerstats.power}</td>
-        <td>Speed: ${item.powerstats.speed}</td>
-        <td>Strength: ${item.powerstats.strength}</td>
+        <td>${item.powerstats.combat}</td>
+        <td>${item.powerstats.durability}</td>
+        <td>${item.powerstats.intelligence}</td>
+        <td>${item.powerstats.power}</td>
+        <td>${item.powerstats.speed}</td>
+        <td>${item.powerstats.strength}</td>
         <td>${item.appearance.race}</td>
         <td>${item.appearance.gender}</td>
         <td>${item.appearance.height}</td>
@@ -134,16 +133,7 @@ function addElement(item) {
 }
 
 
-/*function sortTableBy(columnId, data) {
-    console.log(columnId)
-    // Toggle the sort order
-    ascending = !ascending;
-    console.log(ascending)
-    data.sort((a, b) => {
-        console.log("test")
-    });
-    
-}*/
+
 function sortTableBy(columnId, data) {
     console.log("sort by", columnId);
 
@@ -175,15 +165,24 @@ function sortTableBy(columnId, data) {
 
     return data;
 }
-
 function getColumnValue(item, columnId) {
     switch (columnId) {
         case 'name':
             return item.name;
         case 'fullname':
             return item.biography.fullName || 'N/A';
-        case 'powerstats':
-            return item.powerstats.intelligence || 0; // Choose a default stat to sort by
+        case 'combat':
+            return item.powerstats.combat || 0; // Default to 0 if not available
+        case 'durability':
+            return item.powerstats.durability || 0; // Default to 0 if not available
+        case 'intelligence':
+            return item.powerstats.intelligence || 0; // Default to 0 if not available
+        case 'power':
+            return item.powerstats.power || 0; // Default to 0 if not available
+        case 'speed':
+            return item.powerstats.speed || 0; // Default to 0 if not available
+        case 'strength':
+            return item.powerstats.strength || 0; // Default to 0 if not available
         case 'race':
             return item.appearance.race || 'N/A';
         case 'gender':
