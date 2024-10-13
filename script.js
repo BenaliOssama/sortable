@@ -1,43 +1,65 @@
-let heroes = [];
-let filteredHeroes = [];
-let sortOrder = 'asc';
-let currentPage = 1;
-let pageSize = 20;
+fetch('https://rawcdn.githack.com/akabab/superhero-api/0.2.0/api/all.json').then((response) => response.json()).then(page)
+let c = 20;  // initial value
+const tbody = document.querySelector('tbody'); // Get the first tbody
+const select = document.querySelector('select');
 
-// Fetch superhero data
-fetch('https://rawcdn.githack.com/akabab/superhero-api/0.2.0/api/all.json')
-    .then(response => response.json())
-    .then(data => {
-        heroes = data;
-        filteredHeroes = heroes;
-        renderTable();
-    });
+function page(data) {
+    console.log(c);
+    console.log(data);
+    
+    displayItems(data, c);
 
-// Event listeners for search and page size
-//document.getElementById('search').addEventListener('input', filterHeroes);
-//document.getElementById('pageSize').addEventListener('change', changePageSize);
-
-function renderTable() {
-
-    const tbody = document.querySelector('#heroTable tbody');
-
-    pageData.forEach(hero => {
-        const row = `
-            <tr>
-                <td><img src="${hero.images.xs}" alt="${hero.name}"></td>
-                <td>${hero.name}</td>
-                <td>${hero.biography.fullName || 'N/A'}</td>
-                <td>${hero.appearance.race || 'N/A'}</td>
-                <td>${hero.appearance.gender || 'N/A'}</td>
-                <td>${hero.appearance.height[1] || 'N/A'}</td>
-                <td>${hero.appearance.weight[1] || 'N/A'}</td>
-                <td>${hero.biography.placeOfBirth || 'N/A'}</td>
-                <td>${hero.biography.alignment || 'N/A'}</td>
-                <td>${formatPowerstats(hero.powerstats)}</td>
-            </tr>
-        `;
-        tbody.innerHTML += row;
+    select.addEventListener('input', (e) => {
+        console.log(select.value);
+        c = Number(select.value);
+        displayItems(data, c); 
     });
 }
 
+function displayItems(data, count) {
+    console.log(count)
+    tbody.innerHTML = '';
+    if (typeof data === "undefined") {
+        return
+    }
+    if (count === "all"){
+        console.log("fouuuuuuuuuuuuuuuuuuuud")
+        for (let i = 0; i < data.length; i++) {
+            let item = data[i];
+            addElement(item);
+        }
+    }else{
+        for (let i = 0; i < count && i < data.length; i++) {
+            console.log(i)
+            let item = data[i];
+            addElement(item);
+        }
+    }
+}
 
+function addElement(item) {
+    const row = document.createElement('tr');
+    row.innerHTML = `
+        <td><img src="${item.images.xs}"></td>
+        <td>${item.name}</td>
+        <td>${item.biography.fullName === "" ? 'N/A' : item.biography.fullName}</td>
+        <td>
+            <ul>
+                <li>Combat: ${item.powerstats.combat}</li>
+                <li>Durability: ${item.powerstats.durability}</li>
+                <li>Intelligence: ${item.powerstats.intelligence}</li>
+                <li>Power: ${item.powerstats.power}</li>
+                <li>Speed: ${item.powerstats.speed}</li>
+                <li>Strength: ${item.powerstats.strength}</li>
+            </ul>
+        </td>
+        <td>${item.appearance.race}</td>
+        <td>${item.appearance.gender}</td>
+        <td>${item.appearance.height}</td>
+        <td>${item.appearance.weight}</td>
+        <td>${item.biography.placeOfBirth}</td>
+        <td>${item.biography.alignment}</td>
+    `;
+    
+    tbody.appendChild(row);
+}
