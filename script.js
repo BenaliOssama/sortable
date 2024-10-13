@@ -115,23 +115,20 @@ function addElement(item) {
         <td><img src="${item.images.xs}"></td>
         <td>${item.name}</td>
         <td>${item.biography.fullName === "" ? 'N/A' : item.biography.fullName}</td>
-        <td>
-            <ul>
-                <li>Combat: ${item.powerstats.combat}</li>
-                <li>Durability: ${item.powerstats.durability}</li>
-                <li>Intelligence: ${item.powerstats.intelligence}</li>
-                <li>Power: ${item.powerstats.power}</li>
-                <li>Speed: ${item.powerstats.speed}</li>
-                <li>Strength: ${item.powerstats.strength}</li>
-            </ul>
-        </td>
+        <td><strong>Power Stats:</strong></td>
+        <td>Combat: ${item.powerstats.combat}</td>
+        <td>Durability: ${item.powerstats.durability}</td>
+        <td>Intelligence: ${item.powerstats.intelligence}</td>
+        <td>Power: ${item.powerstats.power}</td>
+        <td>Speed: ${item.powerstats.speed}</td>
+        <td>Strength: ${item.powerstats.strength}</td>
         <td>${item.appearance.race}</td>
         <td>${item.appearance.gender}</td>
         <td>${item.appearance.height}</td>
         <td>${item.appearance.weight}</td>
         <td>${item.biography.placeOfBirth}</td>
         <td>${item.biography.alignment}</td>
-    `;
+        `;
     
     tbody.appendChild(row);
 }
