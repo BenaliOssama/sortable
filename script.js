@@ -132,8 +132,6 @@ function addElement(item) {
     tbody.appendChild(row);
 }
 
-
-
 function sortTableBy(columnId, data) {
     console.log("sort by", columnId);
 
@@ -144,11 +142,17 @@ function sortTableBy(columnId, data) {
     data.sort((a, b) => {
         let valA = getColumnValue(a, columnId);
         let valB = getColumnValue(b, columnId);
+        console.log(valA)
+        console.log(valB)
         
         // Handle missing values (null, undefined, or "N/A")
-        if (valA == null || valA === "N/A" || valA === '-') return 1;
-        if (valB == null || valB === "N/A"|| valB === '-') return -1;
+        if (valA == null || valA === "N/A" || valA === '-' ) return 1;
+        if (valB == null || valB === "N/A" || valB === '-'   ) return -1;
 
+        if (columnId === "weight") {
+            if (valA == 0){return 1};
+            if (valB == 0){return -1};
+        }
         // For numeric values
         if (!isNaN(valA) && !isNaN(valB)) {
             return ascending ? valA - valB : valB - valA;
@@ -165,6 +169,9 @@ function sortTableBy(columnId, data) {
 
     return data;
 }
+
+
+
 function getColumnValue(item, columnId) {
     switch (columnId) {
         case 'name':
@@ -190,7 +197,7 @@ function getColumnValue(item, columnId) {
         case 'height':
             return parseInt(item.appearance.height[1]) || 0; // Convert height to integer for sorting
         case 'weight':
-            return parseInt(item.appearance.weight[1]) || 0; // Convert weight to integer for sorting
+            return parseInt(item.appearance.weight[0]) || 0; // Convert weight to integer for sorting
         case 'placeOfBirth':
             return item.biography.placeOfBirth || 'N/A';
         case 'alignment':
