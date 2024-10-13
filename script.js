@@ -4,37 +4,74 @@ const tbody = document.querySelector('tbody'); // Get the first tbody
 const select = document.querySelector('select');
 let ascending = true; // To keep track of sorting order
 
-
 function page(data) {
-    displayItems(data, c);
-    // number of rows
-    select.addEventListener('input', (e) => {
-        c = select.value
-        displayItems(data, c); 
+    let currentPage = 1; // Initialize current page
+    let c = 20; // Default items per page (can be changed via select input)
+    const totalPages = () => Math.ceil(data.length / c); // Calculate total pages
+
+    // Function to display items for the current page
+    function displayCurrentPage(data) {
+        let startIndex = (currentPage - 1) * c;
+        let endIndex = startIndex + parseInt(c);
+
+        const currentData = data.slice(startIndex, endIndex);
+        displayItems(currentData, c); // Update display with current data
+        document.getElementById('page-info').textContent = `Page ${currentPage} of ${totalPages()}`;
+        updatePaginationButtons();
+    }
+
+    // Update pagination buttons
+    function updatePaginationButtons() {
+        document.getElementById('prev-btn').disabled = currentPage === 1;
+        document.getElementById('next-btn').disabled = currentPage === totalPages();
+    }
+
+    // Pagination button listeners
+    document.getElementById('prev-btn').addEventListener('click', () => {
+        if (currentPage > 1) {
+            currentPage--;
+            displayCurrentPage(data);
+        }
     });
 
-    // sort elements
+    document.getElementById('next-btn').addEventListener('click', () => {
+        if (currentPage < totalPages()) {
+            currentPage++;
+            displayCurrentPage(data);
+        }
+    });
+
+    // Handle change in number of rows (items per page)
+    select.addEventListener('input', (e) => {
+        c = e.target.value === 'all' ? data.length : parseInt(e.target.value);
+        currentPage = 1; // Reset to first page when page size changes
+        displayCurrentPage(data);
+    });
+
+    // Sort elements
     const headers = document.querySelectorAll('th[id]');
     headers.forEach(header => {
         header.addEventListener('click', () => {
             const columnId = header.id;
             data = sortTableBy(columnId, data);
-            displayItems(data, c); 
+            currentPage = 1; // Reset to first page after sorting
+            displayCurrentPage(data);
         });
     });
 
-    // search for element
+    // Search for element
     const searchInput = document.getElementById('search');
-    // Attach event listener to search field
     searchInput.addEventListener('input', (event) => {
-
-        const query = event.target.value.toLowerCase(); // Get the search query
-        console.log(query)
-        let heros = findHeroesByName(query, data)
-        displayItems(heros, c); 
-        //filterHeroes(query); // Call the function to filter and render the table
+        const query = event.target.value.toLowerCase(); // Get search query
+        let filteredData = findHeroesByName(query, data); // Filter data
+        currentPage = 1; // Reset to first page after filtering
+        displayCurrentPage(filteredData); // Display filtered results
     });
+
+    // Initial display of items
+    displayCurrentPage(data);
 }
+
 function findHeroesByName(name, heroesArray) {
     // Convert the input name to lowercase for case-insensitive comparison
     const lowerCaseName = name.toLowerCase();
