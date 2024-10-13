@@ -11,7 +11,7 @@ function page(data) {
 
     select.addEventListener('input', (e) => {
         console.log(select.value);
-        c = Number(select.value);
+        c = select.value
         displayItems(data, c); 
     });
 }
@@ -22,13 +22,15 @@ function displayItems(data, count) {
     if (typeof data === "undefined") {
         return
     }
+    console.log(count)
     if (count === "all"){
-        console.log("fouuuuuuuuuuuuuuuuuuuud")
         for (let i = 0; i < data.length; i++) {
+            console.log(i)
             let item = data[i];
             addElement(item);
         }
     }else{
+        count = Number(count);
         for (let i = 0; i < count && i < data.length; i++) {
             console.log(i)
             let item = data[i];
